@@ -4,8 +4,11 @@ import { Notify } from 'notiflix';
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
+
+const PER_PAGE = 40;
 let currentPage = 1;
 let searchQuery = '';
+let totalPages = 0;
 
 form.addEventListener('submit', e => {
   e.preventDefault();
@@ -41,17 +44,23 @@ async function searchImages() {
         per_page: 40,
       },
     });
+    console.log(response);
+    const { totalHits, data } = response;
 
-    const { data } = response;
-
-    if (data.hits.length === 0) {
+    if (totalHits === 0) {
       Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
       return;
     }
+    // --------------------
+    else if (currentPage === 1) {
+      Notify.success(`Hooray! We found ${totalHits} images.`);
+      totalPages = Math.ceil(totalHits / PER_PAGE);
+    }
+    // --------------------
 
-    const totalHits = data.totalHits || 0;
+    const totalHit = data.totalHits || 0;
     const images = data.hits;
 
     images.forEach(image => {
@@ -59,7 +68,7 @@ async function searchImages() {
       gallery.appendChild(card);
     });
 
-    if (totalHits > currentPage * 40) {
+    if (totalHit > currentPage * 40) {
       loadMoreBtn.style.display = 'block';
     } else {
       loadMoreBtn.style.display = 'none';
