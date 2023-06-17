@@ -55,7 +55,7 @@ async function searchImages() {
     }
     // --------------------
     else if (currentPage === 1) {
-      Notify.success(`Hooray! We found ${totalHits} images.`);
+      Notify.success(`Hooray! We found ${data.totalHits} images.`);
       totalPages = Math.ceil(totalHits / PER_PAGE);
     }
     // --------------------
